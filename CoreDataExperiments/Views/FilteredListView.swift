@@ -17,9 +17,14 @@ struct FilteredListView: View {
         
         VStack {
             //FilteredList(filter: lastNameFilter)
-            FilteredList(filterKey: "lastName", filterValue: lastNameFilter) { (singer: Singer) in
+            FilteredList(predicate: .beginsWith,
+                         filterKey: "lastName",
+                         filterValue: lastNameFilter,
+                         sortKey: "lastName",
+                         sortAsc: true) { (singer: Singer) in
                 Text("\(singer.wrappedFirstName) \(singer.wrappedLastName)")
             }
+            
             Button("Add Examples") {
                 let taylor = Singer(context: self.moc)
                 taylor.firstName = "Taylor"

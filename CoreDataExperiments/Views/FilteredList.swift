@@ -34,6 +34,10 @@ import CoreData
 
 // MARK: Second version
 
+enum Predicate: String {
+    case beginsWith =  "BEGINSWITH"
+}
+
 struct FilteredList<T: NSManagedObject, Content: View>: View {
     var fetchRequest: FetchRequest<T>
     var singers: FetchedResults<T> { fetchRequest.wrappedValue }
@@ -47,8 +51,10 @@ struct FilteredList<T: NSManagedObject, Content: View>: View {
         }
     }
 
-    init(filterKey: String, filterValue: String, @ViewBuilder content: @escaping (T) -> Content) {
-        fetchRequest = FetchRequest<T>(entity: T.entity(), sortDescriptors: [], predicate: NSPredicate(format: "%K BEGINSWITH %@", filterKey, filterValue))
+    init(predicate: Predicate, filterKey: String, filterValue: String, sortKey: String, sortAsc: Bool, @ViewBuilder content: @escaping (T) -> Content) {
+        fetchRequest = FetchRequest<T>(entity: T.entity(), sortDescriptors: [
+        NSSortDescriptor(key: sortKey, ascending: sortAsc)
+        ], predicate: NSPredicate(format: "%K \(predicate.rawValue) %@", filterKey, filterValue))
         self.content = content
     }
 }
